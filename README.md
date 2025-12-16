@@ -20,7 +20,7 @@ This tool adds Automatic1111-compatible metadata to your PNG images so Civitai c
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/civitai-metadata-fixer.git
+git clone https://github.com/hugobartwisch/civitai-metadata-fixer.git
 cd civitai-metadata-fixer
 
 # Install dependencies
