@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Civitai Metadata Fixer</title>
-    <meta name="description" content="Fix 'We couldn't detect valid metadata' errors when uploading to Civitai. Add A1111-compatible metadata to your AI-generated images.">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖼️</text></svg>">
+    <meta name="description"
+        content="Fix 'We couldn't detect valid metadata' errors when uploading to Civitai. Add A1111-compatible metadata to your AI-generated images.">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖼️</text></svg>">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
@@ -15,7 +23,12 @@
             color: #fff;
             padding: 20px;
         }
-        .container { max-width: 900px; margin: 0 auto; }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
         h1 {
             text-align: center;
             margin-bottom: 30px;
@@ -25,53 +38,109 @@
             background-clip: text;
             font-size: 2.5em;
         }
+
         .card {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 20px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .card h2 { color: #e94560; margin-bottom: 16px; font-size: 1.2em; }
+
+        .card h2 {
+            color: #e94560;
+            margin-bottom: 16px;
+            font-size: 1.2em;
+        }
+
         .drop-zone {
-            border: 3px dashed rgba(233,69,96,0.5);
+            border: 3px dashed rgba(233, 69, 96, 0.5);
             border-radius: 12px;
             padding: 60px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: rgba(233,69,96,0.05);
+            background: rgba(233, 69, 96, 0.05);
         }
-        .drop-zone:hover, .drop-zone.dragover {
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
             border-color: #e94560;
-            background: rgba(233,69,96,0.15);
+            background: rgba(233, 69, 96, 0.15);
         }
-        .drop-zone p { color: #a0a0a0; font-size: 1.1em; }
-        .drop-zone .icon { font-size: 3em; margin-bottom: 10px; }
-        #preview-container { display: none; text-align: center; margin-top: 20px; }
+
+        .drop-zone p {
+            color: #a0a0a0;
+            font-size: 1.1em;
+        }
+
+        .drop-zone .icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        #preview-container {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
         #preview-image {
             max-width: 100%;
             max-height: 300px;
             border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
-        .form-group { margin-bottom: 16px; }
-        label { display: block; margin-bottom: 6px; color: #a0a0a0; font-weight: 500; }
-        input, textarea, select {
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #a0a0a0;
+            font-weight: 500;
+        }
+
+        input,
+        textarea,
+        select {
             width: 100%;
             padding: 12px 16px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             color: #fff;
             font-size: 14px;
             transition: border-color 0.3s;
         }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: #e94560; }
-        textarea { resize: vertical; min-height: 100px; font-family: inherit; }
-        .row { display: flex; gap: 16px; flex-wrap: wrap; }
-        .row .form-group { flex: 1; min-width: 120px; }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .row .form-group {
+            flex: 1;
+            min-width: 120px;
+        }
+
         .btn {
             padding: 14px 28px;
             border: none;
@@ -84,14 +153,40 @@
             align-items: center;
             gap: 8px;
         }
-        .btn-primary { background: linear-gradient(135deg, #e94560, #ff6b9d); color: #fff; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(233,69,96,0.4); }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
-        .btn-secondary:hover { background: rgba(255,255,255,0.2); }
-        .btn-success { background: linear-gradient(135deg, #4ecca3, #45b393); color: #fff; }
-        .button-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e94560, #ff6b9d);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4ecca3, #45b393);
+            color: #fff;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
         #current-metadata {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
             padding: 16px;
             border-radius: 8px;
             font-family: monospace;
@@ -101,22 +196,47 @@
             white-space: pre-wrap;
             color: #a0a0a0;
         }
-        .status { padding: 12px 20px; border-radius: 8px; margin-top: 16px; display: none; }
-        .status.success { display: block; background: rgba(78,204,163,0.2); color: #4ecca3; }
-        .status.error { display: block; background: rgba(233,69,96,0.2); color: #e94560; }
+
+        .status {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .status.success {
+            display: block;
+            background: rgba(78, 204, 163, 0.2);
+            color: #4ecca3;
+        }
+
+        .status.error {
+            display: block;
+            background: rgba(233, 69, 96, 0.2);
+            color: #e94560;
+        }
+
         .github-link {
             text-align: center;
             margin-top: 20px;
             color: #666;
         }
-        .github-link a { color: #e94560; text-decoration: none; }
-        .github-link a:hover { text-decoration: underline; }
+
+        .github-link a {
+            color: #e94560;
+            text-decoration: none;
+        }
+
+        .github-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>🖼️ Civitai Metadata Fixer</h1>
-        
+
         <div class="card">
             <h2>📁 Select Image</h2>
             <div class="drop-zone" id="drop-zone">
@@ -142,12 +262,12 @@
                     <label for="prompt">Prompt *</label>
                     <textarea id="prompt" placeholder="Enter your positive prompt here..." rows="4"></textarea>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="negative">Negative Prompt</label>
                     <textarea id="negative" placeholder="Enter negative prompt..." rows="3"></textarea>
                 </div>
-                
+
                 <div class="row">
                     <div class="form-group">
                         <label for="steps">Steps</label>
@@ -170,7 +290,7 @@
                         <input type="number" id="cfg" value="7" min="1" max="30" step="0.5">
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="form-group">
                         <label for="seed">Seed</label>
@@ -185,7 +305,7 @@
                         <input type="number" id="height" value="512">
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="form-group">
                         <label for="model">Model Name</label>
@@ -215,9 +335,9 @@
             </form>
             <div id="status" class="status"></div>
         </div>
-        
+
         <div class="github-link">
-            <a href="https://github.com/bartwisch/civitai-metadata-fixer" target="_blank">⭐ GitHub</a> • 
+            <a href="https://github.com/bartwisch/civitai-metadata-fixer" target="_blank">⭐ GitHub</a> •
             Fix "We couldn't detect valid metadata" errors
         </div>
     </div>
@@ -228,10 +348,10 @@
         let currentImageData = null;
         let currentFilename = 'image.png';
         let originalArrayBuffer = null;
-        
+
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
-        
+
         dropZone.addEventListener('click', () => fileInput.click());
         dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
         dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
@@ -243,13 +363,13 @@
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length) handleFile(e.target.files[0]);
         });
-        
+
         async function handleFile(file) {
             currentFilename = file.name;
-            
+
             // Read as ArrayBuffer for PNG parsing
             originalArrayBuffer = await file.arrayBuffer();
-            
+
             // Read as DataURL for preview
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -258,7 +378,7 @@
                 document.getElementById('preview-container').style.display = 'block';
             };
             reader.readAsDataURL(file);
-            
+
             // Parse PNG metadata
             try {
                 const metadata = extractPngMetadata(new Uint8Array(originalArrayBuffer));
@@ -266,7 +386,7 @@
                 document.getElementById('image-info').textContent = `${metadata.width}x${metadata.height} • ${file.name}`;
                 document.getElementById('width').value = metadata.width;
                 document.getElementById('height').value = metadata.height;
-                
+
                 if (metadata.parameters) {
                     parseA1111Params(metadata.parameters);
                 }
@@ -275,24 +395,24 @@
                 document.getElementById('current-metadata').textContent = 'Could not parse metadata';
             }
         }
-        
+
         function extractPngMetadata(data) {
             const result = { text: '', width: 0, height: 0, parameters: null };
             const view = new DataView(data.buffer);
-            
+
             // Check PNG signature
             if (view.getUint32(0) !== 0x89504E47) return result;
-            
+
             let offset = 8;
             while (offset < data.length) {
                 const length = view.getUint32(offset);
                 const type = String.fromCharCode(...data.slice(offset + 4, offset + 8));
-                
+
                 if (type === 'IHDR') {
                     result.width = view.getUint32(offset + 8);
                     result.height = view.getUint32(offset + 12);
                 }
-                
+
                 if (type === 'tEXt') {
                     const chunkData = data.slice(offset + 8, offset + 8 + length);
                     const nullIndex = chunkData.indexOf(0);
@@ -301,21 +421,21 @@
                     result.text += `${key}: ${value.substring(0, 500)}${value.length > 500 ? '...' : ''}\n\n`;
                     if (key === 'parameters') result.parameters = value;
                 }
-                
+
                 if (type === 'iTXt') {
                     const chunkData = data.slice(offset + 8, offset + 8 + length);
                     const nullIndex = chunkData.indexOf(0);
                     const key = new TextDecoder().decode(chunkData.slice(0, nullIndex));
                     result.text += `${key}: [iTXt chunk]\n\n`;
                 }
-                
+
                 if (type === 'IEND') break;
                 offset += 12 + length;
             }
-            
+
             return result;
         }
-        
+
         function parseA1111Params(params) {
             try {
                 const parts = params.split('Negative prompt:');
@@ -333,32 +453,32 @@
                 }
             } catch (e) { console.error('Parse error:', e); }
         }
-        
+
         function parseSettings(settings) {
             const stepsMatch = settings.match(/Steps:\s*(\d+)/);
             if (stepsMatch) document.getElementById('steps').value = stepsMatch[1];
-            
+
             const samplerMatch = settings.match(/Sampler:\s*([^,]+)/);
             if (samplerMatch) document.getElementById('sampler').value = samplerMatch[1].trim();
-            
+
             const cfgMatch = settings.match(/CFG scale:\s*([\d.]+)/);
             if (cfgMatch) document.getElementById('cfg').value = cfgMatch[1];
-            
+
             const seedMatch = settings.match(/Seed:\s*(\d+)/);
             if (seedMatch) document.getElementById('seed').value = seedMatch[1];
-            
+
             const modelMatch = settings.match(/Model:\s*([^,]+)/);
             if (modelMatch) document.getElementById('model').value = modelMatch[1].trim();
-            
+
             const hashMatch = settings.match(/Model hash:\s*([a-fA-F0-9]+)/);
             if (hashMatch) document.getElementById('model_hash').value = hashMatch[1];
         }
-        
+
         function buildMetadata() {
             let params = document.getElementById('prompt').value.trim();
             const negative = document.getElementById('negative').value.trim();
             if (negative) params += `\nNegative prompt: ${negative}`;
-            
+
             const settings = [
                 `Steps: ${document.getElementById('steps').value}`,
                 `Sampler: ${document.getElementById('sampler').value}`,
@@ -366,19 +486,19 @@
                 `Seed: ${document.getElementById('seed').value}`,
                 `Size: ${document.getElementById('width').value}x${document.getElementById('height').value}`
             ];
-            
+
             const model = document.getElementById('model').value.trim();
             if (model) settings.push(`Model: ${model}`);
-            
+
             const hash = document.getElementById('model_hash').value.trim();
             if (hash) settings.push(`Model hash: ${hash}`);
-            
+
             const clipSkip = document.getElementById('clip_skip').value;
             if (clipSkip !== '1') settings.push(`Clip skip: ${clipSkip}`);
-            
+
             return params + '\n' + settings.join(', ');
         }
-        
+
         function autoFillMetadata() {
             if (!document.getElementById('prompt').value.trim()) {
                 document.getElementById('prompt').value = 'AI generated image';
@@ -394,11 +514,11 @@
             }
             showStatus('Auto-filled! Click "Download Fixed Image" to save.', 'success');
         }
-        
+
         function previewMetadata() {
             alert('Metadata Preview:\n\n' + buildMetadata());
         }
-        
+
         async function saveImage() {
             if (!originalArrayBuffer) {
                 showStatus('Please load an image first', 'error');
@@ -408,10 +528,10 @@
                 showStatus('Prompt is required for Civitai', 'error');
                 return;
             }
-            
+
             const parameters = buildMetadata();
             const pngWithMetadata = addPngTextChunk(new Uint8Array(originalArrayBuffer), 'parameters', parameters);
-            
+
             // Download
             const blob = new Blob([pngWithMetadata], { type: 'image/png' });
             const url = URL.createObjectURL(blob);
@@ -422,16 +542,16 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            
+
             showStatus('Image saved with Civitai-compatible metadata!', 'success');
         }
-        
+
         function addPngTextChunk(pngData, key, value) {
             // Find IEND chunk position
             let iendPos = -1;
             const view = new DataView(pngData.buffer);
             let offset = 8;
-            
+
             while (offset < pngData.length) {
                 const length = view.getUint32(offset);
                 const type = String.fromCharCode(...pngData.slice(offset + 4, offset + 8));
@@ -441,9 +561,9 @@
                 }
                 offset += 12 + length;
             }
-            
+
             if (iendPos === -1) return pngData;
-            
+
             // Create tEXt chunk
             const keyBytes = new TextEncoder().encode(key);
             const valueBytes = new TextEncoder().encode(value);
@@ -451,16 +571,16 @@
             chunkData.set(keyBytes, 0);
             chunkData[keyBytes.length] = 0; // null separator
             chunkData.set(valueBytes, keyBytes.length + 1);
-            
+
             const chunkLength = chunkData.length;
             const chunkType = new TextEncoder().encode('tEXt');
-            
+
             // Calculate CRC
             const crcData = new Uint8Array(4 + chunkData.length);
             crcData.set(chunkType, 0);
             crcData.set(chunkData, 4);
             const crc = crc32(crcData);
-            
+
             // Build new chunk
             const chunk = new Uint8Array(12 + chunkData.length);
             const chunkView = new DataView(chunk.buffer);
@@ -468,16 +588,16 @@
             chunk.set(chunkType, 4);
             chunk.set(chunkData, 8);
             chunkView.setUint32(8 + chunkData.length, crc);
-            
+
             // Combine: before IEND + new chunk + IEND
             const result = new Uint8Array(pngData.length + chunk.length);
             result.set(pngData.slice(0, iendPos), 0);
             result.set(chunk, iendPos);
             result.set(pngData.slice(iendPos), iendPos + chunk.length);
-            
+
             return result;
         }
-        
+
         // CRC32 lookup table
         const crcTable = (() => {
             const table = new Uint32Array(256);
@@ -490,7 +610,7 @@
             }
             return table;
         })();
-        
+
         function crc32(data) {
             let crc = 0xFFFFFFFF;
             for (let i = 0; i < data.length; i++) {
@@ -498,7 +618,7 @@
             }
             return (crc ^ 0xFFFFFFFF) >>> 0;
         }
-        
+
         function showStatus(message, type) {
             const status = document.getElementById('status');
             status.textContent = message;
@@ -506,4 +626,5 @@
         }
     </script>
 </body>
+
 </html>
