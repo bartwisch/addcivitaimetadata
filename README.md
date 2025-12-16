@@ -7,6 +7,12 @@ This tool adds Automatic1111-compatible metadata to your PNG images so Civitai c
 ![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
+## 🌐 Live Demo
+
+**[Use it now → civitai-metadata-fixer.vercel.app](https://civitai-metadata-fixer.vercel.app)**
+
+No installation required! Works entirely in your browser.
+
 ## ✨ Features
 
 - 🌐 **Web-based UI** - Works in any browser, no desktop dependencies
@@ -15,17 +21,25 @@ This tool adds Automatic1111-compatible metadata to your PNG images so Civitai c
 - ⚡ **One-click Auto-fill** - Instantly add valid metadata with sensible defaults
 - 📋 **Full Control** - Edit prompt, negative prompt, steps, sampler, CFG, seed, model, and more
 - 💾 **Download Fixed Images** - Get Civitai-ready PNGs instantly
+- 🔒 **Privacy** - All processing happens locally in your browser
 
-## 🚀 Installation
+## 🚀 Local Installation (Optional)
 
 ```bash
 # Clone the repository
 git clone https://github.com/bartwisch/civitai-metadata-fixer.git
 cd civitai-metadata-fixer
 
-# Install dependencies
+# Option 1: Just open index.html in your browser
+
+# Option 2: Run Python version with more features
 pip install flask pillow
+python civitai_metadata_fixer.py
 ```
+
+## ☁️ Deploy Your Own
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/bartwisch/civitai-metadata-fixer)
 
 ## 📖 Usage
 
